@@ -27,7 +27,7 @@ public class MainActivity extends Activity {
 	/*
 	 * This is an example of how to change settings
 	 */
-	/*@Override
+	@Override
 	public void onBackPressed() {
 		Rater.Settings settings = new Rater.Settings();
 		settings.setDialogMessage("Rate us NOW!");
@@ -35,16 +35,16 @@ public class MainActivity extends Activity {
 		if(Rater.isClosable(this, settings)) {
 			finish();
 		}
-	}*/
+	}
 
 	/*
 	 * You can also pass strings/res ids for quick call.
 	 */
-	@Override
+	/*@Override
 	public void onBackPressed() {
 		if(Rater.isClosable(this, "Title", "Message", "Yes", "No")) {
 			finish();
 		}
-	}
+	}*/
 
 }
