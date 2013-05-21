@@ -8,12 +8,14 @@ Every activity finishes its lifecycle when user taps Back button. When Back butt
 
 Simplest example:
 
-	@Override
-	public void onBackPressed() {
-		if(Rater.isClosable(this)) {
-			finish();
-		}
+```java
+@Override
+public void onBackPressed() {
+	if(Rater.isClosable(this)) {
+		finish();
 	}
+}
+```
 
 To make this code really useful it should be put into your main activity, not into your every activity.
 
