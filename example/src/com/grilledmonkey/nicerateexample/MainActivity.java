@@ -1,8 +1,9 @@
 package com.grilledmonkey.nicerateexample;
 
-import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
+import android.os.Bundle;
+
+import com.grilledmonkey.nicerate.Rater;
 
 public class MainActivity extends Activity {
 
@@ -12,11 +13,28 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 	}
 
+	/*
+	 * This is a very basic usage of NiceRate - just call it from onBackPressed()
+	 * and close activity if function returns true.
+	 */
+	/*@Override
+	public void onBackPressed() {
+		if(Rater.isClosable(this)) {
+			finish();
+		}
+	}*/
+
+	/*
+	 * This is an example of how to change settings
+	 */
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+	public void onBackPressed() {
+		Rater.Settings settings = new Rater.Settings();
+		settings.setDialogMessage("Rate us NOW!");
+		settings.setRateTrigger(2);
+		if(Rater.isClosable(this, settings)) {
+			finish();
+		}
 	}
 
 }
