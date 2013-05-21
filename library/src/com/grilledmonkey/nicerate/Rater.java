@@ -9,6 +9,24 @@ import android.net.Uri;
 
 public class Rater {
 
+	public static boolean isClosable(Context context, int titleId, int messageId, int positiveId, int negativeId) {
+		Settings settings = new Settings();
+		settings.setDialogTitleId(titleId);
+		settings.setDialogMessageId(messageId);
+		settings.setDialogPositiveId(positiveId);
+		settings.setDialogNegativeId(negativeId);
+		return(isClosable(context, settings));
+	}
+
+	public static boolean isClosable(Context context, String title, String message, String positive, String negative) {
+		Settings settings = new Settings();
+		settings.setDialogTitle(title);
+		settings.setDialogMessage(message);
+		settings.setDialogPositive(positive);
+		settings.setDialogNegative(negative);
+		return(isClosable(context, settings));
+	}
+
 	public static boolean isClosable(Context context) {
 		return(isClosable(context, null));
 	}
