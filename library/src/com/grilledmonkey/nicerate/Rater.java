@@ -7,8 +7,33 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 
+/**
+ * A small class to help to ask users for a rating before quitting app.
+ * Dialog asking for rating will show once after amount of activity closings
+ * specified in Settings.rateTrigger (default is 5). Default action on positive reply
+ * is to open Play Market for current app. Activity closings counter is stored
+ * in shared preferences.
+ * <p/>
+ * Rater.isClosable() should be called from onBackPressed() in activity. If
+ * returned value is TRUE, finish() should be called. Check out usage example.
+ * <p/>
+ * Use Rater.Settings class to change any defaults.
+ * 
+ * @author Aux
+ *
+ */
 public class Rater {
 
+	/**
+	 * Convenience method when only textual dialog data should be changed.
+	 * 
+	 * @param context
+	 * @param titleId
+	 * @param messageId
+	 * @param positiveId
+	 * @param negativeId
+	 * @return finish activity when TRUE
+	 */
 	public static boolean isClosable(Context context, int titleId, int messageId, int positiveId, int negativeId) {
 		Settings settings = new Settings();
 		settings.setDialogTitleId(titleId);
@@ -18,6 +43,16 @@ public class Rater {
 		return(isClosable(context, settings));
 	}
 
+	/**
+	 * Convenience method when only textual dialog data should be changed.
+	 * 
+	 * @param context
+	 * @param title
+	 * @param message
+	 * @param positive
+	 * @param negative
+	 * @return finish activity when TRUE
+	 */
 	public static boolean isClosable(Context context, String title, String message, String positive, String negative) {
 		Settings settings = new Settings();
 		settings.setDialogTitle(title);
@@ -27,10 +62,25 @@ public class Rater {
 		return(isClosable(context, settings));
 	}
 
+	/**
+	 * Simplest form of isClosable(). All the settings are defaults.
+	 * 
+	 * @param context
+	 * @return finish activity when TRUE
+	 */
 	public static boolean isClosable(Context context) {
 		return(isClosable(context, null));
 	}
 
+	/**
+	 * This is the most robust variant, all the settings should be specified in
+	 * Rater.Settings object. All unchanged settings will stay at their default
+	 * vaues.
+	 * 
+	 * @param context
+	 * @param settings
+	 * @return finish activity when TRUE
+	 */
 	public static boolean isClosable(Context context, Rater.Settings settings) {
 		if(settings == null) {
 			settings = new Settings();
@@ -99,6 +149,12 @@ public class Rater {
 		builder.show();
 	}
 
+	/**
+	 * All the setting and defaults for Rater.
+	 * 
+	 * @author Aux
+	 *
+	 */
 	public static class Settings {
 		protected String sharedPreferenceName = "preferences";
 		protected int sharedPreferenceMode = Context.MODE_PRIVATE;
@@ -231,6 +287,14 @@ public class Rater {
 		}
 	}
 
+	/**
+	 * Listener interface to intercept default positive action - navigation to
+	 * Play Market. When listener is set in settings, its onRate() will be
+	 * executed instead of a default action.
+	 * 
+	 * @author Aux
+	 *
+	 */
 	public static interface OnRateListener {
 		public void onRate();
 	}
