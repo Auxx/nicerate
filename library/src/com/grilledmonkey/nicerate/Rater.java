@@ -3,7 +3,9 @@ package com.grilledmonkey.nicerate;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 
 public class Rater {
 
@@ -42,6 +44,7 @@ public class Rater {
 
 	protected static void showDialog(Context context, Rater.Settings settings) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		ClickListener listener = new ClickListener(context, settings);
 
 		if(settings.getDialogIconId() > 0) {
 			builder.setIcon(settings.getDialogIconId());
@@ -62,17 +65,17 @@ public class Rater {
 		}
 
 		if(settings.getDialogPositiveId() > 0) {
-			builder.setPositiveButton(settings.getDialogPositiveId(), null);
+			builder.setPositiveButton(settings.getDialogPositiveId(), listener);
 		}
 		else {
-			builder.setPositiveButton(settings.getDialogPositive(), null);
+			builder.setPositiveButton(settings.getDialogPositive(), listener);
 		}
 
 		if(settings.getDialogNegativeId() > 0) {
-			builder.setNegativeButton(settings.getDialogNegativeId(), null);
+			builder.setNegativeButton(settings.getDialogNegativeId(), listener);
 		}
 		else {
-			builder.setNegativeButton(settings.getDialogNegative(), null);
+			builder.setNegativeButton(settings.getDialogNegative(), listener);
 		}
 
 		builder.show();
@@ -94,6 +97,16 @@ public class Rater {
 		protected String dialogMessage = "Please rate our application.";
 		protected String dialogPositive = "OK";
 		protected String dialogNegative = "Cancel";
+
+		protected OnRateListener rateListener = null;
+
+		public OnRateListener getRateListener() {
+			return rateListener;
+		}
+
+		public void setRateListener(OnRateListener rateListener) {
+			this.rateListener = rateListener;
+		}
 
 		public int getRateTrigger() {
 			return rateTrigger;
@@ -200,19 +213,31 @@ public class Rater {
 		}
 	}
 
-	public static class ClickListener implements DialogInterface.OnClickListener {
-		private final Context context;
-		private final String url;
+	public static interface OnRateListener {
+		public void onRate();
+	}
 
-		public ClickListener(Context context, String url) {
+	protected static class ClickListener implements DialogInterface.OnClickListener {
+		private final static String MARKET_URL_BASE = "https://play.google.com/store/apps/details?id=";
+
+		private final Context context;
+		private final Settings settings;
+
+		public ClickListener(Context context, Settings settings) {
 			this.context = context;
-			this.url = url;
+			this.settings = settings;
 		}
 
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			switch(which) {
 				case DialogInterface.BUTTON_POSITIVE:
+					if(settings.getRateListener() != null) {
+						settings.getRateListener().onRate();
+					}
+					else {
+						context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_URL_BASE + context.getPackageName())));
+					}
 					break;
 				case DialogInterface.BUTTON_NEGATIVE:
 					break;
